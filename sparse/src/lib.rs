@@ -1,17 +1,5 @@
-use std::collections::HashMap;
-pub struct Dok<T> {
-    size:(usize,usize),
-    data:HashMap<(usize,usize),T>,
-}
-
-impl<T> Dok<T>{
-    pub fn zeros(m:usize,n:usize)->Self{
-        Self{
-            size:(m,n),
-            data:HashMap::new()
-        }
-    }
-}
+pub mod dok;
+pub use dok::{Dok,DokVec};
 
 pub struct Coo<T> {
     size:(usize,usize),
