@@ -32,3 +32,17 @@ pub trait Matrix: Sized {
     fn size(&self) -> (usize,usize);
     fn det(&self) -> Result<Self::Scalar,CalcError>;
 }
+
+pub trait Zero{
+    fn zero() -> Self;
+}
+impl Zero for f32 {
+    fn zero() -> Self {
+        0.
+    }
+}
+impl Zero for f64 {
+    fn zero() -> Self {
+        0.
+    }
+}
