@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 use matrix_trait::*;
-use std::ops::{Add,Sub,Mul};
+use std::ops::{Add,Sub,Mul,Neg};
 
 #[derive(Clone)]
 pub struct Dok<T> {
     size:(usize,usize),
     data:HashMap<(usize,usize),T>,
 }
-#[derive(Clone,Debug,PartialEq)]
+#[derive(Clone,Debug)]
 pub struct DokVec<T> {
     size:usize,
     data:HashMap<usize,T>,
@@ -32,7 +32,7 @@ impl<T> Dok<T>{
     }
 }
 
-impl<T:Copy+Add<Output=T>+Sub<Output=T>+Mul<Output=T>+Zero> Vector for DokVec<T> {
+impl<T:Copy+Add<Output=T>+Sub<Output=T>+Mul<Output=T>+Neg<Output=T>+Zero> Vector for DokVec<T> {
     type Scalar = T;
     fn add(&self,other:&Self) -> Self{
         let mut result = self.clone();
@@ -52,7 +52,7 @@ impl<T:Copy+Add<Output=T>+Sub<Output=T>+Mul<Output=T>+Zero> Vector for DokVec<T>
             match result.data.get_mut(&k){
                 Some(val) => *val= *val-v,
                 None => {
-                    result.data.insert(k,v);
+                    result.data.insert(k,-v);
                 }
             }
         }
@@ -80,6 +80,18 @@ impl<T:Copy+Add<Output=T>+Sub<Output=T>+Mul<Output=T>+Zero> Vector for DokVec<T>
     }
 }
 
+impl<T:PartialEq+Zero+std::fmt::Debug> PartialEq for DokVec<T> {
+    // TODO This is wasteful because the computing time is twice as the ordinary comparation
+    fn eq(&self,other:&Self)->bool{
+        self.data.iter().all(|(key,lval)|{
+            other.data.get(key).map_or(lval.is_zero(),|rval| *lval == *rval)
+        }) && 
+        other.data.iter().all(|(key,rval)|{
+            self.data.get(key).map_or(rval.is_zero(),|lval| *rval == *lval)
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests{
     #[test]
@@ -89,6 +101,10 @@ mod tests{
         let y = DokVec::from_vec(&vec![0.,0.,3.,0.,4.,0.,0.,0.]);
         assert_eq!(DokVec::from_vec(&vec![0.,0.,3.,3.,8.,0.,0.,0.]),x.add(&y));
         assert_eq!(DokVec::from_vec(&vec![0.,0.,-3.,3.,0.,0.,0.,0.]),x.sub(&y));
+        assert_eq!(DokVec::from_vec(&vec![0.,0.,3.*3.,0.,4.*3.,0.,0.,0.]),y.mul(3.0));
+        assert_eq!(4.*4.,x.dot(&y));
+        assert_eq!(0.,x.get(0));
+        assert_eq!(3.,x.get(3));
     }
 }
 
