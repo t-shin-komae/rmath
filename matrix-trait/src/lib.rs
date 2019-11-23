@@ -9,7 +9,7 @@ pub trait Vector {
     type Scalar:Copy+Add+Sub+Mul;
     fn add(&self,other:&Self) -> Self;
     fn sub(&self,other:&Self) -> Self;
-    fn dot(&self,other:&Self) -> Self;
+    fn dot(&self,other:&Self) -> Self::Scalar;
     fn mul(&self,scalar:Self::Scalar) -> Self;
     fn get(&self,index:usize) -> Self::Scalar;
 }
