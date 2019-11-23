@@ -7,4 +7,7 @@ version = "0.1.0"
 [[package]]
 name = "sparse"
 version = "0.1.0"
+dependencies = [
+ "matrix-trait 0.1.0",
+]
 
