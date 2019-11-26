@@ -1,14 +1,7 @@
 pub mod dok;
+// pub mod coo;
+pub mod csr;
 pub use dok::{Dok,DokVec};
+// pub use coo::{Coo,CooVec};
 
-pub struct Coo<T> {
-    size:(usize,usize),
-    data:Vec<(usize,usize,T)>
-}
 
-pub struct Csr<T> {
-    size:(usize,usize),
-    data:Vec<T>,
-    i_start_index:Vec<usize>,
-    j_index:Vec<usize>,
-}
