@@ -4,13 +4,18 @@ use std::ops::{Add,Sub,Mul,Neg};
 
 #[derive(Clone)]
 pub struct Dok<T> {
-    size:(usize,usize),
-    data:HashMap<(usize,usize),T>,
+    pub size:(usize,usize),
+    data:HashMap<Coordinate,T>,
 }
 #[derive(Clone,Debug)]
 pub struct DokVec<T> {
-    size:usize,
+    pub size:usize,
     data:HashMap<usize,T>,
+}
+
+#[derive(Clone,Hash,PartialEq,Eq)]
+pub struct Coordinate {
+    i:usize,j:usize
 }
 
 impl<T:Zero+PartialEq+Copy> DokVec<T> {
@@ -29,6 +34,13 @@ impl<T> Dok<T>{
             size:(m,n),
             data:HashMap::new()
         }
+    }
+}
+
+impl<T:Copy> Iterator for Dok<T>{
+    type Item = (Coordinate,T);
+    fn next(&mut self) -> Option<Self::Item>{
+        self.data.iter().map(|(&coo,&val)|(coo,val)).next()
     }
 }
 
@@ -108,3 +120,41 @@ mod tests{
     }
 }
 
+// impl<T:Copy+Add<Output=T>+Sub<Output=T>+Mul<Output=T>+Neg<Output=T>+Zero> Matrix for Dok<T> {
+//     type Scalar = T;
+//     type Row = DokVec<T>;
+//     type Col = DokVec<T>;
+
+//     fn add(&self,other:&Self) -> Self{
+//         let mut result = self.clone();
+//         for (&k,&v) in other.data.iter(){
+//             match result.data.get_mut(&k){
+//                 Some(val) => *val= *val+v,
+//                 None => {
+//                     result.data.insert(k,v);
+//                 }
+//             }
+//         }
+//         result
+//     }
+//     fn sub(&self,other:&Self) -> Self{
+//         let mut result = self.clone();
+//         for (&k,&v) in other.data.iter(){
+//             match result.data.get_mut(&k){
+//                 Some(val) => *val= *val-v,
+//                 None => {
+//                     result.data.insert(k,v);
+//                 }
+//             }
+//         }
+//         result
+//     }
+//     fn mul(&self,other:&Self) -> Self{
+//         if self.size.1 != other.size.0{
+//             panic!("Cannot multiply {}*{} matrix and {}*{} matrix",self.size.0,self.size.1,other.size.0,other.size.1);
+//         }
+//         let mut result = Dok::zeros(self.size.0,other.size.1);
+        
+//         result
+//     }
+// }
