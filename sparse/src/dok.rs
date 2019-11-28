@@ -1,21 +1,16 @@
 use std::collections::HashMap;
 use matrix_trait::*;
 use std::ops::{Add,Sub,Mul,Neg};
-
+use crate::coo::Coordinate;
 #[derive(Clone)]
 pub struct Dok<T> {
     pub size:(usize,usize),
-    data:HashMap<Coordinate,T>,
+    pub(crate)data:HashMap<Coordinate,T>,
 }
 #[derive(Clone,Debug)]
 pub struct DokVec<T> {
     pub size:usize,
     data:HashMap<usize,T>,
-}
-
-#[derive(Clone,Hash,PartialEq,Eq)]
-pub struct Coordinate {
-    i:usize,j:usize
 }
 
 impl<T:Zero+PartialEq+Copy> DokVec<T> {
@@ -34,13 +29,6 @@ impl<T> Dok<T>{
             size:(m,n),
             data:HashMap::new()
         }
-    }
-}
-
-impl<T:Copy> Iterator for Dok<T>{
-    type Item = (Coordinate,T);
-    fn next(&mut self) -> Option<Self::Item>{
-        self.data.iter().map(|(&coo,&val)|(coo,val)).next()
     }
 }
 
